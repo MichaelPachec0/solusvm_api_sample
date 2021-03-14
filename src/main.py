@@ -65,7 +65,7 @@ while True:
                     # this one or if its a limitation of the racknerd's config
                     if s['used'] != 0.0 or s['total'] != 0.0:
                         # lint warns about conversion error, percentage is the last param according to solusvm doc
-                        # assume inputs are floats since conversions are already done in line 66.
+                        # assume inputs are floats since conversions are already done in line 72.
                         s[k] = (s['used'] / s['total']) * 100.0
                 else:
                     # default response is a str in bytes, stupid conversion to float and convert the float to GB/TB
