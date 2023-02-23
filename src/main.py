@@ -40,11 +40,11 @@ def api_response(flags: dict, api_url: str) -> dict:
             lKey = list(s.keys())
             for k in lKey:
                 if k == "per":
-                    # apparently solusvm api on racknerd returns 0.0 for mem and for hdd used, dont know who to blame on
-                    # this one or if its a limitation of the racknerd's config
+                    # Apparently, solusvm api on racknerd returns 0.0 for mem and hdd used.
+                    # Do not know who to blame for this one.
                     if s['used'] != 0.0 or s['total'] != 0.0:
                         # lint warns about conversion error, percentage is the last param according to solusvm doc
-                        # assume inputs are floats since conversions are already done in line 72.
+                        # assume inputs are floats since conversions are already done in line 60.
                         s[k] = (s['used'] / s['total']) * 100.0
                     else:
                         s[k] = 0.0
