@@ -87,12 +87,17 @@ if __name__ == '__main__':
         "bw": "true",
         "hdd": "true",
         # false for now, only outputs 0's in Racknerd's case
-        "mem": "false"
+        "mem": "true"
     }
     token.close()
 
     while True:
         response = api_response(post_flags, url)
+
+        if len(response) == 0:
+            # Empty dict, we quit here.
+            print("Empty response from the server. Please check that it is available.")
+            break
         print(f"{'-' * 61}\n"
               f"\t\t\tVPS status at {time.ctime()}\n"
               f"{'-' * 61}\n"
