@@ -46,11 +46,13 @@ def api_response(flags: dict, api_url: str) -> dict:
                         # lint warns about conversion error, percentage is the last param according to solusvm doc
                         # assume inputs are floats since conversions are already done in line 72.
                         s[k] = (s['used'] / s['total']) * 100.0
+                    else:
+                        s[k] = 0.0
                 else:
-                    # default response is a str in bytes, stupid conversion to float and convert the float to GB/TB
-                    f = float(s[k]) * 1E-09
+                    # default response is a str in bytes, foolish conversion to float and convert the float to GB/TB
+                    f = float(s[k]) / 1024 ** 3
                     if f >= 1000.0:
-                        j = f * 1E-3
+                        j = f / 1024
                         s[k + '_mag'] = 'TB'
                         s[k + "_display"] = j
                     else:
