@@ -40,17 +40,19 @@ def api_response(flags: dict, api_url: str) -> dict:
             lKey = list(s.keys())
             for k in lKey:
                 if k == "per":
-                    # apparently solusvm api on racknerd returns 0.0 for mem and for hdd used, dont know who to blame on
-                    # this one or if its a limitation of the racknerd's config
+                    # Apparently, solusvm api on racknerd returns 0.0 for mem and hdd used.
+                    # Do not know who to blame for this one.
                     if s['used'] != 0.0 or s['total'] != 0.0:
                         # lint warns about conversion error, percentage is the last param according to solusvm doc
-                        # assume inputs are floats since conversions are already done in line 72.
+                        # assume inputs are floats since conversions are already done in line 60.
                         s[k] = (s['used'] / s['total']) * 100.0
+                    else:
+                        s[k] = 0.0
                 else:
-                    # default response is a str in bytes, stupid conversion to float and convert the float to GB/TB
-                    f = float(s[k]) * 1E-09
+                    # default response is a str in bytes, foolish conversion to float and convert the float to GB/TB
+                    f = float(s[k]) / 1024 ** 3
                     if f >= 1000.0:
-                        j = f * 1E-3
+                        j = f / 1024
                         s[k + '_mag'] = 'TB'
                         s[k + "_display"] = j
                     else:
@@ -85,12 +87,17 @@ if __name__ == '__main__':
         "bw": "true",
         "hdd": "true",
         # false for now, only outputs 0's in Racknerd's case
-        "mem": "false"
+        "mem": "true"
     }
     token.close()
 
     while True:
         response = api_response(post_flags, url)
+
+        if len(response) == 0:
+            # Empty dict, we quit here.
+            print("Empty response from the server. Please check that it is available.")
+            break
         print(f"{'-' * 61}\n"
               f"\t\t\tVPS status at {time.ctime()}\n"
               f"{'-' * 61}\n"
